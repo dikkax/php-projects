@@ -1,4 +1,5 @@
 <?php
+session_start();
 const W = 800, H = 300;
 
 $i = imageCreate(W, H);
@@ -6,7 +7,7 @@ $white = imageColorAllocate($i, 0xFF, 0xFF, 0xFF);
 $blue = imageColorAllocate($i, 0, 0, 255);
 $black = imageColorAllocate($i, 0, 0, 0);
 
-$sxml3 = simplexml_load_file("last_dyn_res.xml");
+$sxml3 = simplexml_load_string(base64_decode($_SESSION['last_dyn_res']));
 
 $count = 0; $max = 0; $min = trim($sxml3->ValuteCursDynamic->Vcurs);
 foreach($sxml3->ValuteCursDynamic as $curs){
