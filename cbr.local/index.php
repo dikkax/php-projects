@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     const FILE_NAME = "valutes.xml"; //codes for GetCursDynamic
     const TLL = 86400; //24 hours
 
@@ -36,11 +37,18 @@
                 }
                 $result3 = $client->GetCursDynamicXML($param3);
                 $resxml3 = $result3->GetCursDynamicXMLResult->any;
-                file_put_contents("last_dyn_res.xml", $resxml3);
+                $_SESSION['last_dyn_res'] = base64_encode($resxml3);
                 $sxml3 = simplexml_load_string($resxml3);
             }
         } catch (SoapFault $exception) {
             $err = $exception->getMessage();	
+        }
+    } else {
+        if(isset($_GET['XML'])){
+            header("Content-type: text/xml");
+            echo "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
+            echo base64_decode($_SESSION['last_dyn_res']);
+            exit;
         }
     }
 ?>
@@ -126,7 +134,7 @@
        
        echo "<h3>Динамика {$_POST["valute"]} c $d1 до $d2:</h3>";
        echo "<img src='create_image.php'>";
-       echo "<br><a href='last_dyn_res.xml'>Raw XML Data</a>";
+       echo "<br><a href='index.php?XML'>Raw XML Data</a>";
     }
     else {
         echo "<h3>$err</h3>";
